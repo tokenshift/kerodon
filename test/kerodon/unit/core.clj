@@ -136,54 +136,6 @@
             #"button could not be found with selector \"NonExistant\""
             (press state "NonExistant"))))))
 
-(deftest test-press-with-multiple-buttons
-  (let [state {:app (constantly :x)
-               :enlive (parse [:form {:action "/login" :method :post}
-                               [:label {:for "user-id"} "User"]
-                               [:input {:id "user-id"
-                                        :type "text"
-                                        :name "user"
-                                        :value "user-value"}]
-                               [:label {:for "password-id"} "Password"]
-                               [:input {:id "password-id"
-                                        :type "password"
-                                        :name "password"
-                                        :value "password-value"}]
-                               [:input {:id "submit-yes-id"
-                                        :type "submit"
-                                        :name "submit"
-                                        :value "Yes"}]
-                               [:input {:id "submit-no-id"
-                                        :type "submit"
-                                        :name "submit"
-                                        :value "No"}]
-                               [:input {:id "submit-cancel-id"
-                                        :type "submit"
-                                        :name "submit"
-                                        :value "Cancel"}]])
-               :request {:server-port 80
-                         :server-name "localhost"
-                         :remote-addr "localhost"
-                         :uri "/login"
-                         :query-string nil
-                         :scheme :http
-                         :request-method :get
-                         :headers {"host" "localhost"}}}]
-    (testing "press-with-multiple-buttons"
-      (let [query (str "user=user-value&password=password-value")]
-        (testing "'Yes' button"
-          (let [pressed-yes (press state "Yes")
-                body (slurp (:body (:request pressed-yes)))]
-            (is (= "user=user-value&password=password-value&submit=Yes" body))))
-        (testing "'No' button"
-          (let [pressed-no (press state "No")
-                body (slurp (:body (:request pressed-no)))]
-            (is (= "user=user-value&password=password-value&submit=No" body))))
-        (testing "'Cancel' button"
-          (let [pressed-cancel (press state "Cancel")
-                body (slurp (:body (:request pressed-cancel)))]
-            (is (= "user=user-value&password=password-value&submit=Cancel" body))))))))
-
 (deftest test-press
   (testing "press"
     (let [query (str "user=user-value&password=password-value")]
@@ -305,6 +257,54 @@
                                               "content-length"))))
                 (is (re-find #"multipart/form-data;" (:content-type
                                                       (:request state))))))))))))
+
+(deftest test-press-with-multiple-buttons
+  (let [state {:app (constantly :x)
+               :enlive (parse [:form {:action "/login" :method :post}
+                               [:label {:for "user-id"} "User"]
+                               [:input {:id "user-id"
+                                        :type "text"
+                                        :name "user"
+                                        :value "user-value"}]
+                               [:label {:for "password-id"} "Password"]
+                               [:input {:id "password-id"
+                                        :type "password"
+                                        :name "password"
+                                        :value "password-value"}]
+                               [:input {:id "submit-yes-id"
+                                        :type "submit"
+                                        :name "submit"
+                                        :value "Yes"}]
+                               [:input {:id "submit-no-id"
+                                        :type "submit"
+                                        :name "submit"
+                                        :value "No"}]
+                               [:input {:id "submit-cancel-id"
+                                        :type "submit"
+                                        :name "submit"
+                                        :value "Cancel"}]])
+               :request {:server-port 80
+                         :server-name "localhost"
+                         :remote-addr "localhost"
+                         :uri "/login"
+                         :query-string nil
+                         :scheme :http
+                         :request-method :get
+                         :headers {"host" "localhost"}}}]
+    (testing "press-with-multiple-buttons"
+      (let [query (str "user=user-value&password=password-value")]
+        (testing "'Yes' button"
+          (let [pressed-yes (press state "Yes")
+                body (slurp (:body (:request pressed-yes)))]
+            (is (= "user=user-value&password=password-value&submit=Yes" body))))
+        (testing "'No' button"
+          (let [pressed-no (press state "No")
+                body (slurp (:body (:request pressed-no)))]
+            (is (= "user=user-value&password=password-value&submit=No" body))))
+        (testing "'Cancel' button"
+          (let [pressed-cancel (press state "Cancel")
+                body (slurp (:body (:request pressed-cancel)))]
+            (is (= "user=user-value&password=password-value&submit=Cancel" body))))))))
 
 (defn form-params [state submit]
   (-> state
