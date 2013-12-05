@@ -281,21 +281,31 @@
   "Get the name attribute for a form field"
   [field] (get-in field [:attrs :name]))
 
+(defn is-submit-button?
+  "Checks if the field is a form submit button."
+  [field]
+  (and (= :input (:tag field))
+       (= "submit" (:type (:attrs field)))))
 
-(defn all-form-params [form]
+(defn all-form-params [form & [selector]]
+  (let [button (first (enlive/select form [(css-or-value selector)]))]
   (reduce (fn [params field]
             (if-let [value (field->value field)]
-              (assoc-conj params (field-name field) value)
+              (if (or (nil? button)
+                      (not (is-submit-button? field))
+                      (= button field))
+                (assoc-conj params (field-name field) value)
+                params)
               params))
           (om/ordered-map)
           (enlive/select form [[#{:input :textarea :select}
                                 (enlive/but (enlive/attr? :disabled))
-                                (enlive/attr? :name)]])))
+                                (enlive/attr? :name)]]))))
 
 (defn build-request-details [state selector]
   (let [form (form-with-submit (:enlive state) selector)
         method (keyword (string/lower-case (:method (:attrs form) "post")))
         url (or (not-empty (:action (:attrs form)))
                 (build-url (:request state)))
-        params (all-form-params form)]
+        params (all-form-params form selector)]
     [url :request-method method :params params]))

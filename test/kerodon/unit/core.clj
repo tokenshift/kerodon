@@ -172,15 +172,15 @@
     (testing "press-with-multiple-buttons"
       (let [query (str "user=user-value&password=password-value")]
         (testing "'Yes' button"
-          (let [pressed-yes (press state [:#submit-yes-id])
+          (let [pressed-yes (press state "Yes")
                 body (slurp (:body (:request pressed-yes)))]
             (is (= "user=user-value&password=password-value&submit=Yes" body))))
         (testing "'No' button"
-          (let [pressed-no (press state [:#submit-no-id])
+          (let [pressed-no (press state "No")
                 body (slurp (:body (:request pressed-no)))]
             (is (= "user=user-value&password=password-value&submit=No" body))))
         (testing "'Cancel' button"
-          (let [pressed-cancel (press state [:#submit-cancel-id])
+          (let [pressed-cancel (press state "Cancel")
                 body (slurp (:body (:request pressed-cancel)))]
             (is (= "user=user-value&password=password-value&submit=Cancel" body))))))))
 
