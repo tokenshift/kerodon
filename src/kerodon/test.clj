@@ -50,7 +50,7 @@
 
 (defmacro text-in? [expected]
   `(validate #(.contains %1 %2)
-             #(apply str (enlive/texts (:enlive %)))
+             #(impl/normalize-text (apply str (enlive/texts (:enlive %))))
              ~expected
              (~'text-in? ~expected)))
 

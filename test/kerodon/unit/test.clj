@@ -114,6 +114,14 @@
                        :expected '(text-in? "is a")
                        :actual "this is a test"}
                       #(text-in? "is a")
+                      state)))
+    (let [text "\n\tThis is a test\n\tof the emergency\n\tbroadcast   system.\n\t"
+          state {:enlive (parse [:p text])}]
+      (testing "normalizes whitespace in text"
+        (check-report {:type :pass
+                       :expected '(text-in? "a test of the")
+                       :actual text}
+                      #(text-in? "a test of the")
                       state)))))
 
 (deftest test-regex?

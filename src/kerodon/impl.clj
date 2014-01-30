@@ -309,3 +309,8 @@
                 (build-url (:request state)))
         params (all-form-params form selector)]
     [url :request-method method :params params]))
+
+(defn normalize-text
+  "Normalizes HTML text by collapsing and trimming whitespace."
+  [text]
+  (string/replace (string/replace text #"^\s+|\s+$" "") #"\s+" " "))
