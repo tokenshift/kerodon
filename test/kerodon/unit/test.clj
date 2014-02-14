@@ -94,6 +94,22 @@
                       #(text? "yes")
                       state)))))
 
+(deftest test-text-absent?
+  (testing "text-absent?"
+    (let [state {:enlive (parse [:p "lorem ipsum dolor"])}]
+      (testing "fails if text is found"
+        (check-report {:type :fail
+                       :expected '(text-absent? "ipsum")
+                       :actual "lorem ipsum dolor"}
+                      #(text-absent? "ipsum")
+                      state))
+      (testing "passes if text is not found"
+        (check-report {:type :pass
+                       :expected '(text-absent? "consectetur")
+                       :actual "lorem ipsum dolor"}
+                      #(text-absent? "consectetur")
+                      state)))))
+
 (deftest test-text-in?
   (testing "text-in?"
     (let [state {:enlive (parse [:p "this is a test"])}]

@@ -48,6 +48,12 @@
              ~expected
              (~'text? ~expected)))
 
+(defmacro text-absent? [expected]
+  `(validate #(not (.contains %1 %2))
+             #(impl/normalize-text (apply str (enlive/texts (:enlive %))))
+             ~expected
+             (~'text-absent? ~expected)))
+
 (defmacro text-in? [expected]
   `(validate #(.contains %1 %2)
              #(impl/normalize-text (apply str (enlive/texts (:enlive %))))
